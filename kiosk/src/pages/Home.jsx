@@ -14,9 +14,9 @@ export default function Home() {
 
   return (
     //bg-background에서 background는 tailwind.config.js에서 설정했습니다
-    //tailwindcss에 속성을 어떻게 줄 수 있는지는 https://tailwindcss.com/docs/overflow#class-reference 이 사이트에 있습니다
+    //tailwindcss에 속성을 어떻게 줄 수 있는지는 https://tailwindcss.com/docs/overflow#class-reference 사이트에 있습니다
     //font-Gangwon은 index.css에 정의했습니다
-    //Fade 등 위에 import된 효과들은 react-reveal로 애니메이션 효과입니다
+    //Fade 등 위에 import된 효과들은 react-reveal로, 애니메이션 효과입니다
     <div className={`${FlexCol} bg-brown relative z-0 h-screen`}>
         
         <Fade>
