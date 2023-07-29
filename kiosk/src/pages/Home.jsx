@@ -21,7 +21,7 @@ export default function Home() {
         
         <Fade>
             <button 
-            className={`bg-yellow w-2/5 rounded-[45px] pt-8`}
+            className={`bg-yellow w-2/5 h-[200px] rounded-[30px] pt-8`}
             onClick={handleOrderClick}>
                 <p className={'font-Gangwon text-[80px]'}>주문하기</p>
             </button>
