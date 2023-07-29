@@ -13,7 +13,11 @@ export default function Order() {
 
   return (
     <div className={`${FlexCol} bg-beige font-Gangwon relative z-0 h-screen`}>
-        
+      
+      <img src='../public/images/logo.png'/>
+      <div>
+        <p className={`font-Gmarket`}>+버튼과 -버튼으로 수량을 정해보세요</p>
+      </div>
       <Fade>
           <button 
           className={`bg-red w-2/5 rounded-[45px] pt-8`}
