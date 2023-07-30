@@ -3,28 +3,26 @@ import { FlexCol, PaddingX, Padding, FlexRow } from '../constants/style'
 import { Fade, Slide } from 'react-reveal';
 import { useNavigate } from 'react-router-dom';
 import Pulse from 'react-reveal/Pulse';
+import dummy from '../data/menu.json'
 
-export default function Table() {
-  const category = "떡볶이류";
-  const menuList = [
-    {menu:"진짜떡볶이", price: 3000, count: 0},
-    {menu:"치즈떡볶이", price: 3500, count: 0},
-  ]
-
+export default function Table(props) {
+  const menuList = props.categoryList;
   const [menuCounts, setMenuCounts] = useState(menuList.map(() => 0));
 
   const incrementCount = (index) => {
     const updatedCounts = [...menuCounts];
     updatedCounts[index]++;
     setMenuCounts(updatedCounts);
+    props.updateOrder(menuList[index], updatedCounts[index]);
   };
 
   const decrementCount = (index) => {
     const updatedCounts = [...menuCounts];
-    if (updatedCounts[index] > 0) {
-      updatedCounts[index]--;
-      setMenuCounts(updatedCounts);
-    }
+      if (updatedCounts[index] > 0) {
+        updatedCounts[index]--;
+        setMenuCounts(updatedCounts);
+        props.updateOrder(menuList[index], updatedCounts[index]);
+      }
   };
 
 
@@ -33,13 +31,13 @@ export default function Table() {
 
        <div className={`bg-darkred mt-10 mb-0 p-2 
        font-Jeju text-white text-4xl  text-center`}>
-          <p>{category}</p>
+          <p>{props.category}</p>
        </div>
 
     
       {menuList.map((item, index) => (
         <div key={index} className={`${FlexRow} font-Jeju text-4xl bg-white 
-        p-4 mt-0 h-[76px] border-b-2 border-black items-center text-center`}>
+        p-4 mt-0 border-b-2 border-black border-l-4 border-r-4 items-center text-center`}>
           <div className={`w-1/3 m-0 p-0`}>
             <p>{item.menu}</p>
           </div>

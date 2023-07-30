@@ -5,7 +5,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily : {
-        'Jeju' : ['Jeju'],
+        'Jeju' : ['Jeju'], //font-Jeju
       },
       colors: {
         brown: '#7F4F1F',
@@ -15,6 +15,7 @@ module.exports = {
         darkred: '#A9411D',
         pink: '#CF584A',
         darkbrown: '#443010',
+        whiteandgray: '#EFEFEF',
       },
     },
   },

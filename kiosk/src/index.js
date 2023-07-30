@@ -16,8 +16,8 @@ const router = createBrowserRouter([
     children : [
       { index: true, path: '/', element: <Home />},
       { path: '/order', element: <Order />},
-      //완료 화면 
-      //{ path: '/done', element : },
+      // 완료 화면 
+      //{ path: '/done', element : <Done /> },
     ]
   }
 ]);
