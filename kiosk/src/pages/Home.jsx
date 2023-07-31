@@ -1,6 +1,6 @@
 import {React, useState} from 'react'
 import { FlexCol, PaddingX, Padding, FlexRow } from '../constants/style'
-import { Fade, Slide } from 'react-reveal';
+import { Fade, Slide, Zoom } from 'react-reveal';
 import Pulse from 'react-reveal/Pulse';
 import Reveal from 'react-reveal/Reveal';
 import { useNavigate } from 'react-router-dom';
@@ -20,12 +20,12 @@ export default function Home() {
     //Fade 등 위에 import된 효과들은 react-reveal로, 애니메이션 효과입니다
     <div className={`${FlexCol} bg-brown relative z-0 h-screen`}>
       <img src={process.env.PUBLIC_URL + '/images/bread.png'}></img>
-      <Reveal effect="fadeInUp">
+      <Zoom>
         <div className={'font-Gmarket text-ivory flex mt-5 justify-center items-center'}>
           <h1 className={'text-[48px] text-center font-light whitespace-nowrap mr-4'}>저희 키오스크의 메뉴판으로</h1>
           <h1 className={'text-[48px] text-center font-semibold'}>쉽게 주문해보세요 !</h1>
         </div>
-      </Reveal>
+      </Zoom>
       <div className={'flex justify-center'}>
         <hr className={'w-4/5 mt-5 border-ivory border-2 rounded-full mb-20'}></hr>
       </div>

@@ -1,8 +1,9 @@
-import {React, useState} from 'react'
+import {React, useState, useEffect} from 'react'
 import { FlexCol, PaddingX, Padding, FlexRow } from '../constants/style'
 import { Fade, Slide } from 'react-reveal';
 import Pulse from 'react-reveal/Pulse';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function Home() {
     const navigate = useNavigate();
@@ -11,6 +12,22 @@ export default function Home() {
       // '/order' 경로로 페이지 이동
       navigate('/');
     };
+
+    const [waitNumber, setWaitNumber] = useState(0);
+
+    // useEffect를 사용하여 API에서 대기번호 가져옴
+    useEffect(() => {
+      const fetchWaitNumber = async () => {
+        try {
+          const response = await axios.get('API_URL/waitNumber'); // 실제 api 주소 넣어야함
+          setWaitNumber(response.data.waitNumber); // 응답에 'waitNumber' 필드 넣기
+        } catch (error) {
+          console.error('대기번호를 가져오는 중 오류가 발생하였습니다:', error);
+        }
+      };
+
+      fetchWaitNumber();
+    }, []); // 빈 의존성 배열([])은 useEffect가 컴포넌트가 마운트될 때 한 번만 실행됨 의미
 
   return (
     //bg-background에서 background는 tailwind.config.js에서 설정했습니다
@@ -27,11 +44,14 @@ export default function Home() {
         <img className={'absolute inset-0 mt-96 ml-96 w-2/5 h-max'} src={process.env.PUBLIC_URL + '/images/leaf.png'} alt="leaf"></img>
         <img className={'mt-6 ml-auto mr-20 w-80 h-96'} src={process.env.PUBLIC_URL + '/images/deco.png'} alt="deco"></img>
       </div>
-      <div className={`${FlexRow} justify-center z-10 relative`}>
-        <img className={`w-3/4 mt-10`} src={process.env.PUBLIC_URL + '/images/frame.png'} alt="frame"/>
-        <p className="font-Gmarket absolute flex items-center justify-center text-black text-[40px] font-bold">대기번호</p>
-        <p className="font-Gmarket absolute w-full h-full flex items-center justify-center text-black text-[250px] font-bold">186</p>
-      </div>
+      <Fade>
+        <div className={`${FlexRow} justify-center z-10 relative mt-10`}>
+          <img className={`w-3/4`} src={process.env.PUBLIC_URL + '/images/frame.png'} alt="frame"/>
+          <p className={'font-Gmarket absolute mt-16 text-gray text-[44px] font-light'}>대기번호</p>
+          <p className={'font-Gmarket absolute mt-20 text-black text-[250px] font-bold'}>{waitNumber}</p>
+          <p className={'font-Gmarket absolute mt-96 text-gray text-[52px] font-semibold'}>주문이 완료되었습니다!</p>
+        </div>
+      </Fade>
       <div>
         <img className={'absolute inset-0 mt-auto mb-8 w-3/5'} src={process.env.PUBLIC_URL + '/images/spoon.png'} alt="spoon"/>
       </div>
@@ -44,7 +64,7 @@ export default function Home() {
       <div className={`${FlexRow} justify-center`}>
         <Fade>
             <button 
-            className={`mt-16 bg-yellow w-2/5 h-[200px] rounded-[30px] shadow-2xl`}
+            className={`${FlexCol} mt-16 bg-yellow w-2/5 h-[200px] rounded-[30px] shadow-2xl items-center`}
             onClick={handleOrderClick}>
                 <h1 className={'font-Gangwon text-[78px] text-darkbrown'}>처음으로</h1>
                 <h1 className={'font-Gangwon text-[78px] text-darkbrown'}>돌아가기</h1>

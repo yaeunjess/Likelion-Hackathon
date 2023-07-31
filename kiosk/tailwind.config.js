@@ -16,6 +16,7 @@ module.exports = {
         pink: '#CF584A',
         darkbrown: '#663D15',
         ivory: '#FFF8EE',
+        gray: '#5B5B5B',
       },
     },
   },
