@@ -1,7 +1,7 @@
 import {React, useState} from 'react'
 import { FlexCol, PaddingX, Padding, FlexRow } from '../constants/style'
 import { Fade, Slide, Zoom } from 'react-reveal';
-import Pulse from 'react-reveal/Pulse';
+import Shake from 'react-reveal/Shake';
 import Reveal from 'react-reveal/Reveal';
 import { useNavigate } from 'react-router-dom';
 
@@ -32,7 +32,9 @@ export default function Home() {
       <div className={'bg-cover bg-center flex'}>
         <img className={'mt-6 ml-20 w-80 h-96 transform scale-x-[-1]'} src={process.env.PUBLIC_URL + '/images/deco.png'} alt="deco"></img>
         <img className={'absolute inset-0 mt-96 ml-96 w-2/5 h-max'} src={process.env.PUBLIC_URL + '/images/leaf.png'} alt="leaf"></img>
-        <img className={'mt-80 ml-36 z-10 w-36 h-max'} src={process.env.PUBLIC_URL + '/images/bell.png'} alt="bell"></img>
+        <Shake>
+          <img className={'mt-80 ml-36 z-10 w-36 h-max'} src={process.env.PUBLIC_URL + '/images/bell.png'} alt="bell"></img>
+        </Shake>
         <img className={'mt-6 ml-48 w-80 h-96'} src={process.env.PUBLIC_URL + '/images/deco.png'} alt="deco"></img>
       </div>
       <div className={`flex justify-center mt-6 mb-96 z-10`}>

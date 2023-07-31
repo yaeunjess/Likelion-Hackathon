@@ -1,5 +1,5 @@
 import {React, useState, useEffect} from 'react'
-import { FlexCol, PaddingX, Padding, FlexRow } from '../constants/style'
+import { FlexCol, PaddingX, Padding, FlexRow, PaddingY } from '../constants/style'
 import { Fade, Slide } from 'react-reveal';
 import Pulse from 'react-reveal/Pulse';
 import { useNavigate } from 'react-router-dom';
@@ -44,14 +44,14 @@ export default function Home() {
         <img className={'absolute inset-0 mt-96 ml-96 w-2/5 h-max'} src={process.env.PUBLIC_URL + '/images/leaf.png'} alt="leaf"></img>
         <img className={'mt-6 ml-auto mr-20 w-80 h-96'} src={process.env.PUBLIC_URL + '/images/deco.png'} alt="deco"></img>
       </div>
-      <Fade>
+      <Pulse>
         <div className={`${FlexRow} justify-center z-10 relative mt-10`}>
           <img className={`w-3/4`} src={process.env.PUBLIC_URL + '/images/frame.png'} alt="frame"/>
           <p className={'font-Gmarket absolute mt-16 text-gray text-[44px] font-light'}>대기번호</p>
           <p className={'font-Gmarket absolute mt-20 text-black text-[250px] font-bold'}>{waitNumber}</p>
           <p className={'font-Gmarket absolute mt-96 text-gray text-[52px] font-semibold'}>주문이 완료되었습니다!</p>
         </div>
-      </Fade>
+      </Pulse>
       <div>
         <img className={'absolute inset-0 mt-auto mb-8 w-3/5'} src={process.env.PUBLIC_URL + '/images/spoon.png'} alt="spoon"/>
       </div>
@@ -64,10 +64,9 @@ export default function Home() {
       <div className={`${FlexRow} justify-center`}>
         <Fade>
             <button 
-            className={`${FlexCol} mt-16 bg-yellow w-2/5 h-[200px] rounded-[30px] shadow-2xl items-center`}
+            className={`mt-16 bg-yellow w-2/5 h-[200px] rounded-[30px] shadow-2xl items-center`}
             onClick={handleOrderClick}>
-                <h1 className={'font-Gangwon text-[78px] text-darkbrown'}>처음으로</h1>
-                <h1 className={'font-Gangwon text-[78px] text-darkbrown'}>돌아가기</h1>
+                <h1 className={'font-Gangwon text-[100px] text-darkbrown mt-12'}>처음으로</h1>
             </button>
         </Fade>
       </div>
