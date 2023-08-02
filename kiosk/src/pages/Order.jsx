@@ -3,7 +3,6 @@ import axios from 'axios';
 import { FlexCol, PaddingX, Padding, FlexRow } from '../constants/style'
 import { Fade, Slide } from 'react-reveal';
 import { useNavigate } from 'react-router-dom';
-import Reveal from 'react-reveal/Reveal';
 import Pulse from 'react-reveal/Pulse';
 import Bell from '../assets/images/Bell.png';
 import Enlarge from '../assets/images/Enlarge.png';
@@ -20,9 +19,6 @@ export default function Order() {
   const handleClick = () => {
     navigate('/');
   };
-  const handleDoneClick = () => {
-    navigate('/done');
-  }
 
   //Modal 상태 관리 useState()
   //useEffect() 
@@ -48,25 +44,28 @@ export default function Order() {
     setEnlargeState(!enlargeState);
   };
 
+  // 포장/매장
+  const [isTakeout, setIstakeout] = useState();
+  // 카드/현금
+  const [payment, setPayment] = useState();
 
-  //API category 받아오기
+  //API 
   // useEffect(() => {
   //   axios
-  //     .get(`${BASEURL}/product`)
-  //     .then((res) => console.log(res));
-  // }, []);
-  // useEffect(() => {
-  //   axios
-  //     .get(`${BASEURL}/category`)
+  //     .get(`${BASEURL}/product/`)
   //     .then((res) => console.log(res));
   // }, []);
 
-  
+  // useEffect(() => {
+  //   axios
+  //     .get(`${BASEURL}/category/`)
+  //     .then((res) => console.log(res));
+  // }, []);
+
   const categoryList = dummy_category;
   const productList = dummy_product; 
   // category.json 복사
   const categoryNameList = categoryList.map((category)=>(category.category_name))
-
   // category별 product 리스트
   const categoryProductList = categoryList.map((category) =>
     productList.filter((product) => product.category === category.id)
@@ -86,7 +85,6 @@ export default function Order() {
   // 주문메뉴
   const [orderedItems, setOrderedItems] = useState([]);
 
-  
   const updateItemCount = (categoryProductList, categoryName, itemIndex, count, categoryItemsCountList) => {
     // 제품을 categoryProductList에서 가져옵니다.
     const product = categoryProductList[itemIndex];
@@ -145,9 +143,30 @@ export default function Order() {
   //orderItems에 따른 버튼 활성화
   const isButtonEnabled = orderedItems.length > 0;
 
+
+  console.log(orderedItems);
+  //API
+  const handleDoneClick = () => {
+    if (payment === "카드" || payment === "현금"){
+      axios.post(`${BASEURL}/product-order/`,{
+        payment,
+        isTakeout,
+        totalPrice,
+        orderedItems,
+      })
+      .then((response) => {
+        console.log("주문 성공", response.body)
+      })
+      .catch((error) => {
+        console.error("주문 에러", error)
+      });
+    }
+    navigate('/done');
+  }
+
   return (
     <div className={`${FlexCol} bg-beige relative z-0 h-full`} >
-      <Fade>
+    <Fade>
       <div className={`${FlexRow} m-10`}>
         <button onClick={() => handleClick()} className={`w-[30%]`}>
           <img src='/images/logo.png' />
@@ -215,19 +234,6 @@ export default function Order() {
           </div>
         </div>
     )}
-    
-
-    {/* <div className={`${FlexCol} mt-4 ml-12 mr-12 pt-2 pb-4`}>
-      <p className={'font-Jeju text-red text-[30px]'}>신경안쓰셔도 돼요 확인용입니다</p>
-          {orderedItems.map((item, index) => (
-            <div key={index} className={`${FlexRow} justify-between`}>
-              <p className={`font-Jeju text-[24px]`}>
-                {item.product_name}{item.product_detail} - {item.price * item.count}원
-              </p>
-              <p className={`font-Jeju text-[24px]`}>수량: {item.count}</p>
-            </div>
-          ))}
-    </div> */}
     </Fade>
 
     <div className={`${FlexCol} sticky bottom-0 bg-beige `}>
@@ -286,12 +292,12 @@ export default function Order() {
       <img src={ModalTop} className={`w-[400px] absolute -top-24`}/>
       <div className="flex gap-8 justify-center h-[1000px] w-full items-center pt-16 pl-8 pr-8 ">
         <button 
-          onClick={() => setIsModalTwoOpen(true)}
+          onClick={() => {setIsModalTwoOpen(true) && setIstakeout(true)}}
           className={`h-full w-full rounded-[40px] bg-mint/70`}>
           포장하기
         </button>
         <button 
-          onClick={() => setIsModalTwoOpen(true)}
+          onClick={() => {setIsModalTwoOpen(true) && setIstakeout(false)}}
           className={`h-full w-full rounded-[40px] bg-mint/70`}>
           매장식사
         </button>
@@ -320,12 +326,12 @@ export default function Order() {
       <img src={ModalTop} className={`w-[400px] absolute -top-24`}/>
       <div className="flex gap-8 justify-center h-[1000px] w-full items-center pt-16 pl-8 pr-8 ">
         <button 
-          //onClick={() => handleDoneClick()}
+          onClick={() => {handleDoneClick() && setPayment("카드") }}
           className={`h-full w-full rounded-[40px] bg-mint/70`}>
           카드
         </button>
         <button 
-          //onClick={() => handleDoneClick()}
+          onClick={() => {handleDoneClick() && setPayment("현금") }}
           className={`h-full w-full rounded-[40px] bg-mint/70`}>
           현금
         </button>
