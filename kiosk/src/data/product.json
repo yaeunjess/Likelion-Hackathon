@@ -1,0 +1,266 @@
+[
+    {
+        "id": 1,
+        "product_name": "떡볶이",
+        "product_detail": "",
+        "price": 3000,
+        "is_soldout": false,
+        "category": 1
+    },
+    {
+        "id": 2,
+        "product_name": "국물떡볶이",
+        "product_detail": "",
+        "price": 4000,
+        "is_soldout": false,
+        "category": 1
+    },
+    {
+        "id": 3,
+        "product_name": "로제떡볶이",
+        "product_detail": "",
+        "price": 4000,
+        "is_soldout": false,
+        "category": 1
+    },
+    {
+        "id": 4,
+        "product_name": "짜빠떡볶이",
+        "product_detail": "",
+        "price": 4000,
+        "is_soldout": false,
+        "category": 1
+    },
+    {
+        "id": 5,
+        "product_name": "치즈떡볶이",
+        "product_detail": "",
+        "price": 3000,
+        "is_soldout": false,
+        "category": 1
+    },
+    {
+        "id": 6,
+        "product_name": "반반떡볶이",
+        "product_detail": "(죠스+치즈)",
+        "price": 4500,
+        "is_soldout": false,
+        "category": 1
+    },
+    {
+        "id": 7,
+        "product_name": "반반떡볶이",
+        "product_detail": "(죠스+짜빠)",
+        "price": 4500,
+        "is_soldout": false,
+        "category": 1
+    },
+    {
+        "id": 8,
+        "product_name": "반반떡볶이",
+        "product_detail": "(치즈+로제)",
+        "price": 5000,
+        "is_soldout": false,
+        "category": 1
+    },
+    {
+        "id": 9,
+        "product_name": "부산어묵",
+        "product_detail": "",
+        "price": 3000,
+        "is_soldout": false,
+        "category": 2
+    },
+    {
+        "id": 10,
+        "product_name": "죠스찰순대",
+        "product_detail": "(내장 있음)",
+        "price": 3500,
+        "is_soldout": false,
+        "category": 2
+    },
+    {
+        "id": 11,
+        "product_name": "죠스찰순대",
+        "product_detail": "(내장 없음)",
+        "price": 3500,
+        "is_soldout": false,
+        "category": 2
+    },
+    {
+        "id": 12,
+        "product_name": "수제튀김(중)",
+        "product_detail": "(오징어, 김말이, 고구마, 어묵, 만두)",
+        "price": 3500,
+        "is_soldout": false,
+        "category": 2
+    },
+    {
+        "id": 13,
+        "product_name": "수제튀김(대)",
+        "product_detail": "(오징어, 김말이, 고구마, 어묵, 만두, 새우, 고추, 야채)",
+        "price": 6500,
+        "is_soldout": false,
+        "category": 2
+    },
+    {
+        "id": 14,
+        "product_name": "김말이 튀김",
+        "product_detail": "",
+        "price": 700,
+        "is_soldout": false,
+        "category": 2
+    },
+    {
+        "id": 15,
+        "product_name": "고구마 튀김",
+        "product_detail": "",
+        "price": 700,
+        "is_soldout": false,
+        "category": 2
+    },
+    {
+        "id": 16,
+        "product_name": "어묵 튀김",
+        "product_detail": "",
+        "price": 700,
+        "is_soldout": false,
+        "category": 2
+    },
+    {
+        "id": 17,
+        "product_name": "만두 튀김",
+        "product_detail": "",
+        "price": 700,
+        "is_soldout": false,
+        "category": 2
+    },
+    {
+        "id": 18,
+        "product_name": "오징어 튀김",
+        "product_detail": "",
+        "price": 700,
+        "is_soldout": false,
+        "category": 2
+    },
+    {
+        "id": 19,
+        "product_name": "새우 튀김",
+        "product_detail": "",
+        "price": 700,
+        "is_soldout": false,
+        "category": 2
+    },
+    {
+        "id": 20,
+        "product_name": "고추 튀김",
+        "product_detail": "",
+        "price": 700,
+        "is_soldout": false,
+        "category": 2
+    },
+    {
+        "id": 21,
+        "product_name": "야채 튀김",
+        "product_detail": "",
+        "price": 700,
+        "is_soldout": false,
+        "category": 2
+    },
+    {
+        "id": 22,
+        "product_name": "새우튀김우동",
+        "product_detail": "",
+        "price": 4500,
+        "is_soldout": false,
+        "category": 2
+    },
+    {
+        "id": 23,
+        "product_name": "꼬마김밥",
+        "product_detail": "",
+        "price": 2500,
+        "is_soldout": false,
+        "category": 2
+    },
+    {
+        "id": 24,
+        "product_name": "컵밥",
+        "product_detail": "",
+        "price": 3500,
+        "is_soldout": false,
+        "category": 2
+    },
+    {
+        "id": 25,
+        "product_name": "쿨피스",
+        "product_detail": "",
+        "price": 1000,
+        "is_soldout": false,
+        "category": 2
+    },
+    {
+        "id": 26,
+        "product_name": "탄산음료",
+        "product_detail": "",
+        "price": 1500,
+        "is_soldout": false,
+        "category": 2
+    },
+    {
+        "id": 27,
+        "product_name": "1인 세트",
+        "product_detail": "(떡볶이 1/2 + 찰순대 1/2 + 수제튀김(중) )",
+        "price": 5500,
+        "is_soldout": false,
+        "category": 3
+    },
+    {
+        "id": 28,
+        "product_name": "2인 세트",
+        "product_detail": "(떡볶이 + 찰순대 + 수제튀김(중) + 쿨피스 )",
+        "price": 10700,
+        "is_soldout": false,
+        "category": 3
+    },
+    {
+        "id": 29,
+        "product_name": "3인 세트",
+        "product_detail": "(떡볶이 + 찰순대 + 수제튀김(중) + 부산어묵 + 쿨피스 )",
+        "price": 13700,
+        "is_soldout": false,
+        "category": 3
+    },
+    {
+        "id": 30,
+        "product_name": "4인 세트",
+        "product_detail": "(떡볶이 2인 + 찰순대 + 수제튀김(대) + 부산어묵 + 쿨피스 )",
+        "price": 19500,
+        "is_soldout": false,
+        "category": 3
+    },
+    {
+        "id": 31,
+        "product_name": "떡킨 세트",
+        "product_detail": "(떡볶이 + 순살치킨)",
+        "price": 8000,
+        "is_soldout": false,
+        "category": 3
+    },
+    {
+        "id": 32,
+        "product_name": "떡킨 세트",
+        "product_detail": "(떡볶이 + 양념치킨)",
+        "price": 9000,
+        "is_soldout": false,
+        "category": 3
+    },
+    {
+        "id": 33,
+        "product_name": "떡킨 세트",
+        "product_detail": "(떡볶이 + 간장치킨)",
+        "price": 9000,
+        "is_soldout": false,
+        "category": 3
+    }
+]
