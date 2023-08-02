@@ -1,4 +1,5 @@
 import {React, useState, useEffect, useRef} from 'react'
+import axios from 'axios';
 import { FlexCol, PaddingX, Padding, FlexRow } from '../constants/style'
 import { Fade, Slide } from 'react-reveal';
 import { useNavigate } from 'react-router-dom';
@@ -6,14 +7,14 @@ import Reveal from 'react-reveal/Reveal';
 import Pulse from 'react-reveal/Pulse';
 import Bell from '../assets/images/Bell.png';
 import Enlarge from '../assets/images/Enlarge.png';
-import dummy from '../data/menu.json';
+import dummy_product from '../data/product.json';
 import Modal from 'react-modal';
 import ModalTop from '../assets/images/ModalTop.png'
 import { BASEURL } from '../context/context';
+import dummy_category from '../data/category.json';
 
 
 export default function Order() {
-
   //페이지 전환 useNavigate()(vs Link)
   const navigate = useNavigate();
   const handleClick = () => {
@@ -41,7 +42,6 @@ export default function Order() {
     }
   }, [isModalOpen]);
 
-  
   //돋보기 아이콘 useState()
   const [enlargeState, setEnlargeState] = useState(false);
   const handleEnlargeClick = () => {
@@ -49,86 +49,105 @@ export default function Order() {
   };
 
 
-  //menuList 관련
-  const menuData = dummy; 
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [orderedItems, setOrderedItems] = useState([]);
-  //oderedItems 구하기
-  const updateOrder = (menu, detail, count) => {
-    const updatedItems = [...orderedItems];
-    const menuKeys = Object.keys(menuData);
+  //API category 받아오기
+  // useEffect(() => {
+  //   axios
+  //     .get(`${BASEURL}/product`)
+  //     .then((res) => console.log(res));
+  // }, []);
+  // useEffect(() => {
+  //   axios
+  //     .get(`${BASEURL}/category`)
+  //     .then((res) => console.log(res));
+  // }, []);
+
   
-    if (count === 0) {
-      const index = updatedItems.findIndex(
-        (item) => item.menu === menu && item.detail === detail
-      );
-      if (index !== -1) {
-        updatedItems.splice(index, 1);
+  const categoryList = dummy_category;
+  const productList = dummy_product; 
+  // category.json 복사
+  const categoryNameList = categoryList.map((category)=>(category.category_name))
+
+  // category별 product 리스트
+  const categoryProductList = categoryList.map((category) =>
+    productList.filter((product) => product.category === category.id)
+  );
+
+  // category별 수량
+  const initialItemCount = {};
+  categoryList.forEach((category)=>{
+    const categoryProductList = productList.filter((product)=> product.category === category.id);
+    const initialCategoryItemCount = categoryProductList.map(()=>0);
+    initialItemCount[category.category_name] = initialCategoryItemCount;
+  })
+  const [itemCounts, setItemCounts] = useState(initialItemCount);
+  
+  // 총가격
+  const [totalPrice, setTotalPrice] = useState(0);
+  // 주문메뉴
+  const [orderedItems, setOrderedItems] = useState([]);
+
+  
+  const updateItemCount = (categoryProductList, categoryName, itemIndex, count, categoryItemsCountList) => {
+    // 제품을 categoryProductList에서 가져옵니다.
+    const product = categoryProductList[itemIndex];
+  
+    // 새로운 총 가격을 계산할 변수를 선언합니다.
+    let newTotalPrice;
+  
+    // count가 양수인 경우 (버튼이 + 버튼일 때)
+    if (count >= 0) {
+      // itemCounts 상태를 업데이트하여 선택한 항목의 수량을 업데이트합니다.
+      setItemCounts((prevCounts) => ({
+        ...prevCounts,
+        [categoryName]: prevCounts[categoryName].map((itemCount, index) =>
+          index === itemIndex ? count : itemCount
+        ),
+      }));
+  
+      // 새로운 총 가격을 계산하여 totalPrice 상태를 업데이트합니다.
+      newTotalPrice = totalPrice + (count - categoryItemsCountList[itemIndex]) * product.price;
+  
+      // 선택한 항목에 따라 orderedItems 상태를 업데이트합니다.
+      if (count > 0) {
+        setOrderedItems((prevItems) => {
+          const existingItemIndex = prevItems.findIndex((item) => item.id === product.id);
+          if (existingItemIndex !== -1) {
+            // 항목이 이미 존재하는 경우, 수량을 업데이트합니다.
+            const updatedItems = [...prevItems];
+            updatedItems[existingItemIndex] = { ...product, count };
+            return updatedItems;
+          } else {
+            // 항목이 새로운 경우, orderedItems에 추가합니다.
+            return [...prevItems, { ...product, count }];
+          }
+        });
+      } else {
+        // 수량이 0인 경우, orderedItems에서 항목을 제거합니다.
+        setOrderedItems((prevItems) => prevItems.filter((item) => item.id !== product.id));
       }
     } else {
-      for (const key of menuKeys) {
-        const menuItem = menuData[key].find(
-          (item) => item.menu === menu && item.detail === detail
-        );
-        if (menuItem) {
-          const { menu, detail, price } = menuItem;
-          const index = updatedItems.findIndex(
-            (item) => item.menu === menu && item.detail === detail
-          );
-          if (index !== -1) {
-            updatedItems[index].count = count;
-          } else {
-            updatedItems.push({ menu, detail, price, count });
-          }
-          break; 
-        }
-      }
+      // count가 음수인 경우 (버튼이 - 버튼일 때)
+      // 여기서는 수량을 업데이트하지 않고, totalPrice에서 이전 수량의 가격을 빼야합니다.
+      // 따라서 count에 음수 값을 취해서 이전 수량을 되돌리고, totalPrice에서는 이전 수량의 가격을 빼야합니다.
+      setItemCounts((prevCounts) => ({
+        ...prevCounts,
+        [categoryName]: prevCounts[categoryName].map((itemCount, index) =>
+          index === itemIndex ? Math.max(0, count) : itemCount
+        ),
+      }));
+      newTotalPrice = totalPrice - (categoryItemsCountList[itemIndex] * product.price);
     }
   
-    setOrderedItems(updatedItems);
-    updateTotalPrice();
+    // totalPrice 상태를 업데이트합니다.
+    setTotalPrice(newTotalPrice);
   };
-  //totalPrice 구하기
-  const updateTotalPrice = () => {
-    let totalPrice = 0;
-    orderedItems.forEach((item) => {
-      totalPrice += item.price * item.count;
-    });
-    setTotalPrice(totalPrice);
-  };
-
-  useEffect(() => {
-    updateTotalPrice();
-  }, [orderedItems]);
-
 
   //orderItems에 따른 버튼 활성화
   const isButtonEnabled = orderedItems.length > 0;
 
-  //수량 counts
-  const initialItemCount = {
-    떡볶이류: dummy.떡볶이류.map(() => 0),
-    사이드류: dummy.사이드류.map(() => 0),
-    세트메뉴: dummy.세트메뉴.map(() => 0),
-  };
-  const [itemCounts, setItemCounts] = useState(initialItemCount);
-  const updateItemCount = (category, menu, detail, count) => {
-    const updatedCounts = { ...itemCounts };
-    const index = dummy[category].findIndex(
-      (item) => item.menu === menu && item.detail === detail
-    );
-    if (index !== -1) {
-      updatedCounts[category][index] = count;
-      setItemCounts(updatedCounts);
-      updateOrder(menu, detail, count);
-    }
-  };
-
-
   return (
     <div className={`${FlexCol} bg-beige relative z-0 h-full`} >
-      {/* <Fade> */}
-      <Reveal>
+      <Fade>
       <div className={`${FlexRow} m-10`}>
         <button onClick={() => handleClick()} className={`w-[30%]`}>
           <img src='/images/logo.png' />
@@ -140,7 +159,6 @@ export default function Order() {
           <p>직원 호출</p>
         </button>
       </div>
-      </Reveal>
       
       
       <div className={`bg-darkbrown rounded-full text-center ml-12 mr-12 mt-8 pt-4 pb-2`}>
@@ -150,223 +168,67 @@ export default function Order() {
     {enlargeState ===false ? (
         <div className={`${FlexRow} w-full`}>
           <div className={`${FlexCol} w-1/2 ml-8 mr-2`}>
-            
-            {/* 떡볶이 */}
-            <div className={`${FlexCol}`}>
-              <div className={`bg-darkred mt-10 mb-0 p-2 
-              font-Jeju text-white text-4xl text-center`}>
-                <p>떡볶이류</p>
-              </div>
-              {dummy.떡볶이류.map((item, index) => (
-              <div key={index} className={`${FlexRow} font-Jeju text-4xl bg-white 
-              p-4 mt-0 border-b-2 border-black border-l-4 border-r-4 items-center text-center`}>
-                <div className={`w-[40%] m-0 p-0`}>
-                  <p>{item.menu}</p>
-                  <p className={`text-2xl`}>{item.detail}</p>
-                </div>
-                <div className={`w-[30%] m-0 p-0`}>
-                  <p>{item.price}원</p>
-                </div>
-                <div className={`w-[30%] m-0 p-0 ${FlexRow} justify-center gap-2 `}>
-                  <button className={`${itemCounts.떡볶이류[index]>0? 'bg-red' : 'bg-gray-400'} rounded-full w-[50px] h-[50px] text-white`}
-                  onClick={() => updateItemCount('떡볶이류', item.menu, item.detail, itemCounts.떡볶이류[index] - 1)}>
-                    <p className={`mt-1`}>-</p>
-                  </button>
-                  <div className={`rounded-md border-2 border-black w-[80px] h-[50px] text-center`}>
-                    <p className={`mt-1`}>{itemCounts.떡볶이류[index]}</p>
-                  </div>
-                  <button className={`${itemCounts.떡볶이류[index]>0? 'bg-red' : 'bg-gray-400'} rounded-full w-[50px] h-[50px] text-white`}
-                   onClick={() => updateItemCount('떡볶이류', item.menu, item.detail, itemCounts.떡볶이류[index] + 1)}>
-                    <p className={`mt-1`}>+</p>
-                  </button>
-                </div>
-              </div>
-              ))}
-            </div>
-            {/* 세트메뉴 */}
-            <div className={`${FlexCol}`}>
-              <div className={`bg-darkred mt-10 mb-0 p-2 
-              font-Jeju text-white text-4xl text-center`}>
-                <p>세트메뉴</p>
-              </div>
-              {dummy.세트메뉴.map((item, index) => (
-              <div key={index} className={`${FlexRow} font-Jeju text-4xl bg-white 
-              p-4 mt-0 border-b-2 border-black border-l-4 border-r-4 items-center text-center`}>
-                <div className={`w-[40%] m-0 p-0`}>
-                  <p>{item.menu}</p>
-                  <p className={`text-2xl`}>{item.detail}</p>
-                </div>
-                <div className={`w-[30%] m-0 p-0`}>
-                  <p>{item.price}원</p>
-                </div>
-                <div className={`w-[30%] m-0 p-0 ${FlexRow} justify-center gap-2 `}>
-                  <button className={`${itemCounts.세트메뉴[index]>0? 'bg-red' : 'bg-gray-400'} rounded-full w-[50px] h-[50px] text-white`}
-                  onClick={() => updateItemCount('세트메뉴', item.menu, item.detail, itemCounts.세트메뉴[index] - 1)}>
-                    <p className={`mt-1`}>-</p>
-                  </button>
-                  <div className={`rounded-md border-2 border-black w-[80px] h-[50px] text-center`}>
-                    <p className={`mt-1`}>{itemCounts.세트메뉴[index]}</p>
-                  </div>
-                  <button className={`${itemCounts.세트메뉴[index]>0? 'bg-red' : 'bg-gray-400'} rounded-full w-[50px] h-[50px] text-white`}
-                   onClick={() => updateItemCount('세트메뉴', item.menu, item.detail, itemCounts.세트메뉴[index] + 1)}>
-                    <p className={`mt-1`}>+</p>
-                  </button>
-                </div>
-              </div>
-              ))}
-            </div>
+          <Table
+            categoryProductList={categoryProductList[0]}
+            categoryName={categoryNameList[0]}
+            categoryItemsCountList={itemCounts[categoryNameList[0]]} 
+        
+            updateItemCount={updateItemCount}
+          />
+          <Table
+            categoryProductList={categoryProductList[2]}
+            categoryName={categoryNameList[2]}
+            categoryItemsCountList={itemCounts[categoryNameList[2]]} 
+            updateItemCount={updateItemCount}
+          />
           </div>
           <div className={`${FlexCol} w-1/2 mr-8 ml-2`}>
-            {/* 사이드류 */}
-            <div className={`${FlexCol}`}>
-              <div className={`bg-darkred mt-10 mb-0 p-2 
-              font-Jeju text-white text-4xl text-center`}>
-                <p>사이드류</p>
-              </div>
-              {dummy.사이드류.map((item, index) => (
-              <div key={index} className={`${FlexRow} font-Jeju text-4xl bg-white 
-              p-4 mt-0 border-b-2 border-black border-l-4 border-r-4 items-center text-center`}>
-                <div className={`w-[40%] m-0 p-0`}>
-                  <p>{item.menu}</p>
-                  <p className={`text-2xl`}>{item.detail}</p>
-                </div>
-                <div className={`w-[30%] m-0 p-0`}>
-                  <p>{item.price}원</p>
-                </div>
-                <div className={`w-[30%] m-0 p-0 ${FlexRow} justify-center gap-2 `}>
-                  <button className={`${itemCounts.사이드류[index]>0? 'bg-red' : 'bg-gray-400'} rounded-full w-[50px] h-[50px] text-white`}
-                  onClick={() => updateItemCount('사이드류', item.menu, item.detail, itemCounts.사이드류[index] - 1)}>
-                    <p className={`mt-1`}>-</p>
-                  </button>
-                  <div className={`rounded-md border-2 border-black w-[80px] h-[50px] text-center`}>
-                    <p className={`mt-1`}>{itemCounts.사이드류[index]}</p>
-                  </div>
-                  <button className={`${itemCounts.사이드류[index]>0? 'bg-red' : 'bg-gray-400'} rounded-full w-[50px] h-[50px] text-white`}
-                   onClick={() => updateItemCount('사이드류', item.menu, item.detail, itemCounts.사이드류[index] + 1)}>
-                    <p className={`mt-1`}>+</p>
-                  </button>
-                </div>
-              </div>
-              ))}
-            </div>
+          <Table
+              categoryProductList={categoryProductList[1]}
+              categoryName={categoryNameList[1]}
+              categoryItemsCountList={itemCounts[categoryNameList[1]]} 
+              updateItemCount={updateItemCount}
+            />
           </div>
         </div>
     ) : (
         <div className={`${FlexRow} w-full`}>
           <div className={`${FlexCol} w-full ml-8 mr-8`}>
-            {/* 떡볶이 */}
-            <div className={`${FlexCol}`}>
-              <div className={`bg-darkred mt-10 mb-0 p-2 
-              font-Jeju text-white text-4xl text-center`}>
-                <p>떡볶이류</p>
-              </div>
-              {dummy.떡볶이류.map((item, index) => (
-              <div key={index} className={`${FlexRow} font-Jeju text-4xl bg-white 
-              p-4 mt-0 border-b-2 border-black border-l-4 border-r-4 items-center text-center`}>
-                <div className={`w-[40%] m-0 p-0`}>
-                  <p>{item.menu}</p>
-                  <p className={`text-2xl`}>{item.detail}</p>
-                </div>
-                <div className={`w-[30%] m-0 p-0`}>
-                  <p>{item.price}원</p>
-                </div>
-                <div className={`w-[30%] m-0 p-0 ${FlexRow} justify-center gap-2 `}>
-                  <button className={`${itemCounts.떡볶이류[index]>0? 'bg-red' : 'bg-gray-400'} rounded-full w-[50px] h-[50px] text-white`}
-                  onClick={() => updateItemCount('떡볶이류', item.menu, item.detail, itemCounts.떡볶이류[index] - 1)}>
-                    <p className={`mt-1`}>-</p>
-                  </button>
-                  <div className={`rounded-md border-2 border-black w-[80px] h-[50px] text-center`}>
-                    <p className={`mt-1`}>{itemCounts.떡볶이류[index]}</p>
-                  </div>
-                  <button className={`${itemCounts.떡볶이류[index]>0? 'bg-red' : 'bg-gray-400'} rounded-full w-[50px] h-[50px] text-white`}
-                   onClick={() => updateItemCount('떡볶이류', item.menu, item.detail, itemCounts.떡볶이류[index] + 1)}>
-                    <p className={`mt-1`}>+</p>
-                  </button>
-                </div>
-              </div>
-              ))}
-            </div>
-            {/* 세트메뉴 */}
-            <div className={`${FlexCol}`}>
-              <div className={`bg-darkred mt-10 mb-0 p-2 
-              font-Jeju text-white text-4xl text-center`}>
-                <p>세트메뉴</p>
-              </div>
-              {dummy.세트메뉴.map((item, index) => (
-              <div key={index} className={`${FlexRow} font-Jeju text-4xl bg-white 
-              p-4 mt-0 border-b-2 border-black border-l-4 border-r-4 items-center text-center`}>
-                <div className={`w-[40%] m-0 p-0`}>
-                  <p>{item.menu}</p>
-                  <p className={`text-2xl`}>{item.detail}</p>
-                </div>
-                <div className={`w-[30%] m-0 p-0`}>
-                  <p>{item.price}원</p>
-                </div>
-                <div className={`w-[30%] m-0 p-0 ${FlexRow} justify-center gap-2 `}>
-                  <button className={`${itemCounts.세트메뉴[index]>0? 'bg-red' : 'bg-gray-400'} rounded-full w-[50px] h-[50px] text-white`}
-                  onClick={() => updateItemCount('세트메뉴', item.menu, item.detail, itemCounts.세트메뉴[index] - 1)}>
-                    <p className={`mt-1`}>-</p>
-                  </button>
-                  <div className={`rounded-md border-2 border-black w-[80px] h-[50px] text-center`}>
-                    <p className={`mt-1`}>{itemCounts.세트메뉴[index]}</p>
-                  </div>
-                  <button className={`${itemCounts.세트메뉴[index]>0? 'bg-red' : 'bg-gray-400'} rounded-full w-[50px] h-[50px] text-white`}
-                   onClick={() => updateItemCount('세트메뉴', item.menu, item.detail, itemCounts.세트메뉴[index] + 1)}>
-                    <p className={`mt-1`}>+</p>
-                  </button>
-                </div>
-              </div>
-              ))}
-            </div>
-            {/* 사이드류 */}
-            <div className={`${FlexCol}`}>
-              <div className={`bg-darkred mt-10 mb-0 p-2 
-              font-Jeju text-white text-4xl text-center`}>
-                <p>사이드류</p>
-              </div>
-              {dummy.사이드류.map((item, index) => (
-              <div key={index} className={`${FlexRow} font-Jeju text-4xl bg-white 
-              p-4 mt-0 border-b-2 border-black border-l-4 border-r-4 items-center text-center`}>
-                <div className={`w-[40%] m-0 p-0`}>
-                  <p>{item.menu}</p>
-                  <p className={`text-2xl`}>{item.detail}</p>
-                </div>
-                <div className={`w-[30%] m-0 p-0`}>
-                  <p>{item.price}원</p>
-                </div>
-                <div className={`w-[30%] m-0 p-0 ${FlexRow} justify-center gap-2 `}>
-                  <button className={`${itemCounts.사이드류[index]>0? 'bg-red' : 'bg-gray-400'} rounded-full w-[50px] h-[50px] text-white`}
-                  onClick={() => updateItemCount('사이드류', item.menu, item.detail, itemCounts.사이드류[index] - 1)}>
-                    <p className={`mt-1`}>-</p>
-                  </button>
-                  <div className={`rounded-md border-2 border-black w-[80px] h-[50px] text-center`}>
-                    <p className={`mt-1`}>{itemCounts.사이드류[index]}</p>
-                  </div>
-                  <button className={`${itemCounts.사이드류[index]>0? 'bg-red' : 'bg-gray-400'} rounded-full w-[50px] h-[50px] text-white`}
-                   onClick={() => updateItemCount('사이드류', item.menu, item.detail, itemCounts.사이드류[index] + 1)}>
-                    <p className={`mt-1`}>+</p>
-                  </button>
-                </div>
-              </div>
-              ))}
-            </div>
+          <Table
+            categoryProductList={categoryProductList[0]}
+            categoryName={categoryNameList[0]}
+            categoryItemsCountList={itemCounts[categoryNameList[0]]} 
+            updateItemCount={updateItemCount}
+          />
+          <Table
+            categoryProductList={categoryProductList[2]}
+            categoryName={categoryNameList[2]}
+            categoryItemsCountList={itemCounts[categoryNameList[2]]}
+            updateItemCount={updateItemCount}
+          />
+          <Table
+            categoryProductList={categoryProductList[1]}
+            categoryName={categoryNameList[1]}
+            categoryItemsCountList={itemCounts[categoryNameList[1]]} 
+            updateItemCount={updateItemCount}
+          />
           </div>
         </div>
     )}
     
 
-    <div className={`${FlexCol} mt-4 ml-12 mr-12 pt-2 pb-4`}>
+    {/* <div className={`${FlexCol} mt-4 ml-12 mr-12 pt-2 pb-4`}>
       <p className={'font-Jeju text-red text-[30px]'}>신경안쓰셔도 돼요 확인용입니다</p>
           {orderedItems.map((item, index) => (
             <div key={index} className={`${FlexRow} justify-between`}>
               <p className={`font-Jeju text-[24px]`}>
-                {item.menu}{item.detail} - {item.price * item.count}원
+                {item.product_name}{item.product_detail} - {item.price * item.count}원
               </p>
               <p className={`font-Jeju text-[24px]`}>수량: {item.count}</p>
             </div>
           ))}
-    </div>
-    {/* </Fade> */}
+    </div> */}
+    </Fade>
 
     <div className={`${FlexCol} sticky bottom-0 bg-beige `}>
       
@@ -480,5 +342,46 @@ export default function Order() {
 
     </div>
   
+  )
+}
+
+
+function Table({categoryProductList, categoryName, categoryItemsCountList, updateItemCount}) {
+
+  return(
+    <div className={`${FlexCol}`}>
+      <div className={`bg-darkred mt-10 mb-0 p-2 
+        font-Jeju text-white text-4xl text-center`}>
+        <p>{categoryName}</p>
+      </div>
+
+      {categoryProductList.map((item, index) => (
+      <div key={index} className={`${FlexRow} font-Jeju text-4xl bg-white 
+        p-4 mt-0 border-b-2 border-black border-l-4 border-r-4 items-center text-center`}>
+        <div className={`w-[40%] m-0 p-0`}>
+          <p>{item.product_name}</p>
+          <p className={`text-2xl`}>{item.product_detail}</p>
+        </div>
+        <div className={`w-[30%] m-0 p-0`}>
+          <p>{item.price}원</p>
+        </div>
+        <div className={`w-[30%] m-0 p-0 ${FlexRow} justify-center gap-2 `}>
+          <button className={`${categoryItemsCountList[index]>0? 'bg-red' : 'bg-gray-400'} rounded-full w-[50px] h-[50px] text-white`}
+            onClick={() => updateItemCount(categoryProductList, categoryName, index, categoryItemsCountList[index] - 1, categoryItemsCountList)}
+            >
+            <p className={`mt-1`}>-</p>
+          </button>
+          <div className={`rounded-md border-2 border-black w-[80px] h-[50px] text-center`}>
+            <p className={`mt-1`}>{categoryItemsCountList[index]}</p>
+          </div>
+          <button className={`${categoryItemsCountList[index]>0? 'bg-red' : 'bg-gray-400'} rounded-full w-[50px] h-[50px] text-white`}
+           onClick={() =>  updateItemCount(categoryProductList, categoryName, index, categoryItemsCountList[index] + 1, categoryItemsCountList)}
+           >
+            <p className={`mt-1`}>+</p>
+          </button>
+        </div>
+      </div>
+      ))}
+    </div>
   )
 }
