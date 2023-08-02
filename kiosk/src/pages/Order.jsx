@@ -2,6 +2,7 @@ import {React, useState, useEffect, useRef} from 'react'
 import { FlexCol, PaddingX, Padding, FlexRow } from '../constants/style'
 import { Fade, Slide } from 'react-reveal';
 import { useNavigate } from 'react-router-dom';
+import Reveal from 'react-reveal/Reveal';
 import Pulse from 'react-reveal/Pulse';
 import Bell from '../assets/images/Bell.png';
 import Enlarge from '../assets/images/Enlarge.png';
@@ -125,7 +126,8 @@ export default function Order() {
 
   return (
     <div className={`${FlexCol} bg-beige relative z-0 h-full`} >
-      <Fade>
+      {/* <Fade> */}
+      <Reveal>
       <div className={`${FlexRow} m-10`}>
         <button onClick={() => handleClick()} className={`w-[30%]`}>
           <img src='/images/logo.png' />
@@ -137,6 +139,8 @@ export default function Order() {
           <p>직원 호출</p>
         </button>
       </div>
+      </Reveal>
+      
       
       <div className={`bg-darkbrown rounded-full text-center ml-12 mr-12 mt-8 pt-4 pb-2`}>
         <p className={`font-Gmarket text-white text-[40px]`}>+버튼과 -버튼으로 수량을 정해보세요</p>
@@ -361,7 +365,7 @@ export default function Order() {
             </div>
           ))}
     </div>
-    </Fade>
+    {/* </Fade> */}
 
     <div className={`${FlexCol} sticky bottom-0 bg-beige `}>
       
