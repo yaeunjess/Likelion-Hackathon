@@ -9,6 +9,7 @@ import Enlarge from '../assets/images/Enlarge.png';
 import dummy from '../data/menu.json';
 import Modal from 'react-modal';
 import ModalTop from '../assets/images/ModalTop.png'
+import { BASEURL } from '../context/context';
 
 
 export default function Order() {
