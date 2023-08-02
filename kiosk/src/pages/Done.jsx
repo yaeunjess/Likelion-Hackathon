@@ -46,9 +46,9 @@ export default function Home() {
       <Pulse>
         <div className={`${FlexRow} justify-center z-10 relative mt-10`}>
           <img className={`w-3/4`} src={'/images/frame.png'} alt="frame"/>
-          <p className={'font-Gmarket absolute mt-16 text-gray text-[44px] font-light'}>대기번호</p>
+          <p className={'font-Gmarket absolute mt-16 text-grayy text-[44px] font-light'}>대기번호</p>
           <p className={'font-Gmarket absolute mt-20 text-black text-[250px] font-bold'}>{waitNumber}</p>
-          <p className={'font-Gmarket absolute mt-96 text-gray text-[52px] font-semibold'}>주문이 완료되었습니다!</p>
+          <p className={'font-Gmarket absolute mt-96 text-grayy text-[52px] font-semibold'}>주문이 완료되었습니다!</p>
         </div>
       </Pulse>
       <div>
