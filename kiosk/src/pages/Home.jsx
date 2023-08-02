@@ -1,9 +1,11 @@
-import {React, useState} from 'react'
+import {React, useState, useEffect} from 'react'
+import axios from 'axios';
 import { FlexCol, PaddingX, Padding, FlexRow } from '../constants/style'
 import { Fade, Slide, Zoom } from 'react-reveal';
 import Shake from 'react-reveal/Shake';
 import Reveal from 'react-reveal/Reveal';
 import { useNavigate } from 'react-router-dom';
+import { BASEURL } from '../context/context';
 
 export default function Home() {
     const navigate = useNavigate();
@@ -12,6 +14,12 @@ export default function Home() {
       // '/order' 경로로 페이지 이동
       navigate('/done');
     };
+
+    useEffect(() => {
+      axios
+        .get(`${BASEURL}/product`)
+        .then((res) => console.log(res));
+    }, []);
 
   return (
     //bg-background에서 background는 tailwind.config.js에서 설정했습니다
