@@ -12,6 +12,7 @@ import ModalTop from '../assets/images/ModalTop.png'
 import { BASEURL } from '../context/context';
 import dummy_category from '../data/category.json';
 
+Modal.setAppElement('#root');
 
 export default function Order() {
   //페이지 전환 useNavigate()(vs Link)
@@ -50,17 +51,17 @@ export default function Order() {
   const [payment, setPayment] = useState();
 
   //API 
-  useEffect(() => {
-    axios
-      .get(`${BASEURL}/product/`)
-      .then((res) => console.log(res.body));
-  }, []);
+  // useEffect(() => {
+  //   axios
+  //     .get(`${BASEURL}/product/`)
+  //     .then((res) => console.log(res.data));
+  // }, []);
 
-  useEffect(() => {
-    axios
-      .get(`${BASEURL}/category/`)
-      .then((res) => console.log(res.body));
-  }, []);
+  // useEffect(() => {
+  //   axios
+  //     .get(`${BASEURL}/category/`)
+  //     .then((res) => console.log(res.data));
+  // }, []);
 
   const categoryList = dummy_category;
   const productList = dummy_product; 
@@ -135,7 +136,13 @@ export default function Order() {
       }));
       newTotalPrice = totalPrice - (categoryItemsCountList[itemIndex] * product.price);
     }
-  
+
+    const updatedOrderedItems = orderedItems.filter((item) => item.id !== product.id);
+    if (count > 0) {
+      updatedOrderedItems.push({ id: product.id, number:count });
+    }
+    setOrderedItems(updatedOrderedItems);
+
     // totalPrice 상태를 업데이트합니다.
     setTotalPrice(newTotalPrice);
   };
@@ -143,25 +150,33 @@ export default function Order() {
   //orderItems에 따른 버튼 활성화
   const isButtonEnabled = orderedItems.length > 0;
 
+  //대기번호
+  const [waitNumber, setWaitNumber] = useState(112);
 
-  console.log(orderedItems);
   //API
-  const handleDoneClick = () => {
-    if (payment === "카드" || payment === "현금"){
-      axios.post(`${BASEURL}/product-order/`,{
-        payment,
-        isTakeout,
-        totalPrice,
-        orderedItems,
-      })
-      .then((response) => {
-        console.log("주문 성공", response.body)
-      })
-      .catch((error) => {
-        console.error("주문 에러", error)
-      });
-    }
-    navigate('/done');
+  const handleDoneClick = (paymentMethod) => {
+    console.log({
+      products : orderedItems,
+      payment : paymentMethod,
+      is_takeout : isTakeout,
+      total_price: totalPrice,
+    })
+    axios.post(`${BASEURL}/product-order/`, {
+      products : orderedItems,
+      payment : paymentMethod,
+      is_takeout : isTakeout,
+      total_price: totalPrice,
+    })
+    .then((response) => {
+      console.log("주문 성공", response.data);
+      //setWaitNumber(response.data.waitNumber);
+      //navigate('/done', { state: { waitNumber } });
+    })
+    .catch((error) => {
+      console.error("주문 에러", error);
+    });
+
+    navigate('/done', { state: { waitNumber } });
   }
 
   return (
@@ -292,12 +307,12 @@ export default function Order() {
       <img src={ModalTop} className={`w-[400px] absolute -top-24`}/>
       <div className="flex gap-8 justify-center h-[1000px] w-full items-center pt-16 pl-8 pr-8 ">
         <button 
-          onClick={() => {setIsModalTwoOpen(true) && setIstakeout(true)}}
+          onClick={() => {setIstakeout(true); setIsModalTwoOpen(true); }}
           className={`h-full w-full rounded-[40px] bg-mint/70`}>
           포장하기
         </button>
         <button 
-          onClick={() => {setIsModalTwoOpen(true) && setIstakeout(false)}}
+          onClick={() => {setIstakeout(false); setIsModalTwoOpen(true); }}
           className={`h-full w-full rounded-[40px] bg-mint/70`}>
           매장식사
         </button>
@@ -326,12 +341,12 @@ export default function Order() {
       <img src={ModalTop} className={`w-[400px] absolute -top-24`}/>
       <div className="flex gap-8 justify-center h-[1000px] w-full items-center pt-16 pl-8 pr-8 ">
         <button 
-          onClick={() => {handleDoneClick() && setPayment("카드") }}
+          onClick={() => {setIsModalTwoOpen(false); handleDoneClick("카드"); }}
           className={`h-full w-full rounded-[40px] bg-mint/70`}>
           카드
         </button>
         <button 
-          onClick={() => {handleDoneClick() && setPayment("현금") }}
+          onClick={() => {setIsModalTwoOpen(false); handleDoneClick("현금"); }}
           className={`h-full w-full rounded-[40px] bg-mint/70`}>
           현금
         </button>
