@@ -17,7 +17,7 @@ module.exports = {
         darkbrown: '#443010',
         whiteandgray: '#EFEFEF',
         mint:'#00F3B8',
-        ivoty: "#FFF8EE",
+        ivory: "#FFF8EE",
         grayy : "#5B5B5B",
       },
     },

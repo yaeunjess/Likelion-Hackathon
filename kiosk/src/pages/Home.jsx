@@ -50,7 +50,7 @@ export default function Home() {
           <button 
             className={`mt-16 bg-yellow w-2/5 h-[200px] rounded-[30px] shadow-2xl`}
             onClick={() => handleOrderClick()}>
-              <h1 className={'font-Gangwon text-[100px] text-darkbrown mt-12'}>주문하기</h1>
+              <h1 className={'font-Gangwon text-[100px] text-white mt-12'}>주문하기</h1>
           </button>
       </div>
       <div>

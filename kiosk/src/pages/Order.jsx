@@ -50,17 +50,17 @@ export default function Order() {
   const [payment, setPayment] = useState();
 
   //API 
-  // useEffect(() => {
-  //   axios
-  //     .get(`${BASEURL}/product/`)
-  //     .then((res) => console.log(res));
-  // }, []);
+  useEffect(() => {
+    axios
+      .get(`${BASEURL}/product/`)
+      .then((res) => console.log(res.body));
+  }, []);
 
-  // useEffect(() => {
-  //   axios
-  //     .get(`${BASEURL}/category/`)
-  //     .then((res) => console.log(res));
-  // }, []);
+  useEffect(() => {
+    axios
+      .get(`${BASEURL}/category/`)
+      .then((res) => console.log(res.body));
+  }, []);
 
   const categoryList = dummy_category;
   const productList = dummy_product; 
