@@ -39,7 +39,7 @@ export default function Order() {
     }
   }, [isModalOpen]);
 
-  //돋보기 아이콘 useState()
+  //돋보기 아이콘 상태 관리 useState()
   const [enlargeState, setEnlargeState] = useState(false);
   const handleEnlargeClick = () => {
     setEnlargeState(!enlargeState);
@@ -47,45 +47,64 @@ export default function Order() {
 
   // 포장/매장
   const [isTakeout, setIstakeout] = useState();
-  // 카드/현금
-  const [payment, setPayment] = useState();
 
-  //API 
+  // API로 받아올 정보 배열들
+  const [categoryList, setCategoryList] = useState();
+  const [productList, setProductList] = useState();
+  // API-GET
   useEffect(() => {
     axios
       .get(`${BASEURL}/product/`)
-      .then((res) => console.log(res.data));
+      .then((res) => {
+        setProductList(res.data);
+      })
+      .catch((error) => {
+        console.error("상품 목록을 불러오는 중 오류 발생", error);
+      });
   }, []);
-
   useEffect(() => {
     axios
       .get(`${BASEURL}/category/`)
-      .then((res) => console.log(res.data));
+      .then((res) => {
+        setCategoryList(res.data);
+      })
+      .catch((error) => {
+        console.error("상품 목록을 불러오는 중 오류 발생", error);
+      });
   }, []);
 
-  const categoryList = dummy_category;
-  const productList = dummy_product; 
-  // category.json 복사
-  const categoryNameList = categoryList.map((category)=>(category.category_name))
-  // category별 product 리스트
-  const categoryProductList = categoryList.map((category) =>
-    productList.filter((product) => product.category === category.id)
-  );
-
+  const [categoryNameList, setCategoryNameList] = useState({});
+  const [categoryProductList, setCategoryProductList] = useState({});
   // category별 수량
   const initialItemCount = {};
-  categoryList.forEach((category)=>{
-    const categoryProductList = productList.filter((product)=> product.category === category.id);
-    const initialCategoryItemCount = categoryProductList.map(()=>0);
-    initialItemCount[category.category_name] = initialCategoryItemCount;
-  })
-  const [itemCounts, setItemCounts] = useState(initialItemCount);
-  
+  const [itemCounts, setItemCounts] = useState({});
+
+  useEffect(()=>{
+    if(categoryList && productList){
+      // category.json 복사
+      setCategoryNameList(categoryList.map((category)=>(category.category_name)));
+
+      // category별 product 리스트
+      setCategoryProductList(categoryList.map((category) =>
+        productList.filter((product) => product.category === category.id)));
+
+      
+      categoryList.forEach((category)=>{
+        const categoryProductList = productList.filter((product)=> product.category === category.id);
+        const initialCategoryItemCount = categoryProductList.map(()=>0);
+        initialItemCount[category.category_name] = initialCategoryItemCount;
+      })
+      setItemCounts(initialItemCount)
+    }
+  },[categoryList, productList])
+
+
+
   // 총가격
   const [totalPrice, setTotalPrice] = useState(0);
   // 주문메뉴
   const [orderedItems, setOrderedItems] = useState([]);
-
+  // 주문메뉴 업데이트 함수
   const updateItemCount = (categoryProductList, categoryName, itemIndex, count, categoryItemsCountList) => {
     // 제품을 categoryProductList에서 가져옵니다.
     const product = categoryProductList[itemIndex];
@@ -152,8 +171,7 @@ export default function Order() {
 
   //대기번호
   const [waitNumber, setWaitNumber] = useState(112);
-
-  //API
+  //API-post
   const handleDoneClick = (paymentMethod) => {
     console.log({
       products : orderedItems,
@@ -175,7 +193,7 @@ export default function Order() {
     .catch((error) => {
       console.error("주문 에러", error);
     });
-
+    // 여길 주석하면 됨
     navigate('/done', { state: { waitNumber } });
   }
 
@@ -376,7 +394,7 @@ function Table({categoryProductList, categoryName, categoryItemsCountList, updat
         <p>{categoryName}</p>
       </div>
 
-      {categoryProductList.map((item, index) => (
+      {categoryItemsCountList && categoryProductList.map((item, index) => (
       <div key={index} className={`${FlexRow} font-Jeju text-4xl bg-white 
         p-4 mt-0 border-b-2 border-black border-l-4 border-r-4 items-center text-center`}>
         <div className={`w-[40%] m-0 p-0`}>
