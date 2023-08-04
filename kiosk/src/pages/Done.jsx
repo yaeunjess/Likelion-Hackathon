@@ -19,21 +19,6 @@ export default function Done() {
       console.log(waitNumber); 
     }, [waitNumber]);
 
-
-    // useEffect를 사용하여 API에서 대기번호 가져옴
-    // useEffect(() => {
-    //   const fetchWaitNumber = async () => {
-    //     try {
-    //       const response = await axios.get(`${BASEURL}/waitNumber`); // 실제 api 주소 넣어야함
-    //       setWaitNumber(response.data.waitNumber); // 응답에 'waitNumber' 필드 넣기
-    //     } catch (error) {
-    //       console.error('대기번호를 가져오는 중 오류가 발생하였습니다:', error);
-    //     }
-    //   };
-
-    //   fetchWaitNumber();
-    // }, []); // 빈 의존성 배열([])은 useEffect가 컴포넌트가 마운트될 때 한 번만 실행됨 의미
-
   return (
     <div className={`${FlexCol} bg-brown relative z-0 h-screen`}>
       <img src={'/images/bread.png'}></img>
