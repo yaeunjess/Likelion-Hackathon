@@ -1,14 +1,24 @@
-import {React, useState} from 'react'
+import {React, useState, useEffect} from 'react'
 import { FlexCol, PaddingX, Padding, FlexRow } from '../constants/style'
 import { Fade, Slide, Zoom } from 'react-reveal';
 import Shake from 'react-reveal/Shake';
 import { useNavigate } from 'react-router-dom';
+import home_audio from '../assets/audio/home_audio.mp3';
 
 export default function Home() {
     const navigate = useNavigate();
     const handleOrderClick = () => {
       navigate('/order');
-    };
+    };    
+  
+    useEffect(() => {
+      const audio = new Audio(home_audio);
+      audio.play();
+  
+      return () => {
+        audio.pause();
+      };
+    }, []);
 
   return (
     //bg-background에서 background는 tailwind.config.js에서 설정했습니다

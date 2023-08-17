@@ -11,6 +11,11 @@ import Modal from 'react-modal';
 import ModalTop from '../assets/images/ModalTop.png'
 import { BASEURL } from '../context/context';
 import dummy_category from '../data/category.json';
+import order_audio from '../assets/audio/order_audio.mp3';
+import bell_audio from '../assets/audio/bell_audio.mp3';
+import place_audio from '../assets/audio/place_audio.mp3';
+import pay_audio from '../assets/audio/pay_audio.mp3';
+
 
 Modal.setAppElement('#root');
 
@@ -20,6 +25,55 @@ export default function Order() {
   const handleClick = () => {
     navigate('/');
   };
+
+  //oder_audio, 주문
+  //bell_audio, 직원호출
+  const [oderAudio] = useState(new Audio(order_audio));
+  const [bellAudio] = useState(new Audio(bell_audio));
+
+  useEffect(() => {
+    oderAudio.play();
+
+    return () => {
+      oderAudio.pause();
+    };
+  }, []);
+
+  useEffect(() => {
+    if(isModalOpen) {
+      oderAudio.pause();
+      bellAudio.play();
+    } 
+  });
+
+  //place_audio, 식사장소 선택
+  //pay_audio, 지불방식 선택
+  const [placeAudio] = useState(new Audio(place_audio));
+  const [payAudio] = useState(new Audio(pay_audio));
+
+  useEffect(() => {
+    if (isModalFirstOpen) {
+        oderAudio.pause();
+        placeAudio.play();
+        payAudio.currentTime = 0;
+    }
+
+    return () => {
+        placeAudio.pause();
+    };
+  });
+
+  useEffect(() => {
+    if (isModalTwoOpen) {
+        placeAudio.pause();
+        payAudio.play();
+        placeAudio.currentTime = 0; //placeAudio의 재생 위치 0으로 초기화
+    }
+
+    return () => {
+      payAudio.pause();
+    };
+  });
 
   //Modal 상태 관리 useState()
   //useEffect() 
