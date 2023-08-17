@@ -5,12 +5,22 @@ import Pulse from 'react-reveal/Pulse';
 import { useNavigate, useLocation  } from 'react-router-dom';
 import axios from 'axios';
 import { BASEURL } from '../context/context';
+import done_audio from '../assets/audio/done_audio.mp3';
 
 export default function Done() {
     const navigate = useNavigate();
     const handleOrderClick = () => {
       navigate('/');
     };
+
+    useEffect(() => {
+      const audio = new Audio(done_audio);
+      audio.play();
+  
+      return () => {
+        audio.pause();
+      };
+    }, []);
 
     const location = useLocation();
     const waitNumber = location.state && location.state.waitNumber;
