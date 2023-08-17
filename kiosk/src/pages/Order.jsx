@@ -228,31 +228,27 @@ export default function Order() {
   //API-post
   const handleDoneClick = (paymentMethod) => {
     console.log({
-      products : orderedItems.map(item => item.id),
-      quantity : orderedItems.map(item => item.number),
+      products : orderedItems,
       payment : paymentMethod,
       is_takeout : isTakeout,
       total_price: totalPrice,
     })
-    axios.post(`${BASEURL}/order/`, {
-      products : orderedItems.map(item => item.id),
-      quantity : orderedItems.map(item => item.number),
+    axios.post(`${BASEURL}/product-order/`, {
+      products : orderedItems,
       payment : paymentMethod,
       is_takeout : isTakeout,
       total_price: totalPrice,
     })
     .then((response) => {
-      console.log("주문 성공", response.data.order_number);
-      const newWaitNumber = response.data.order_number;
-      setWaitNumber(newWaitNumber);
-      console.log("주문 성공", newWaitNumber);
-      navigate('/done', { state: { waitNumber: newWaitNumber } });
+      console.log("주문 성공", response.data);
+      //setWaitNumber(response.data.waitNumber);
+      //navigate('/done', { state: { waitNumber } });
     })
     .catch((error) => {
       console.error("주문 에러", error);
     });
     // 여길 주석하면 됨
-    //navigate('/done', { state: { waitNumber } });
+    navigate('/done', { state: { waitNumber } });
   }
 
   return (
