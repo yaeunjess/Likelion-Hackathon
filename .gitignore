@@ -9,7 +9,7 @@ out/
 public/
 
 # Dependency directories
-./kiosk/node_modules/
+kiosk/node_modules/
 
 # macOS
 .DS_Store
