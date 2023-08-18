@@ -94,7 +94,7 @@ export default function Order() {
   }, [isModalOpen]);
 
   //돋보기 아이콘 상태 관리 useState()
-  const [enlargeState, setEnlargeState] = useState(false);
+  const [enlargeState, setEnlargeState] = useState(true);
   const handleEnlargeClick = () => {
     setEnlargeState(!enlargeState);
   };
@@ -282,14 +282,15 @@ export default function Order() {
             categoryProductList={categoryProductList[0]}
             categoryName={categoryNameList[0]}
             categoryItemsCountList={itemCounts[categoryNameList[0]]} 
-        
             updateItemCount={updateItemCount}
+            enlargeState={enlargeState}
           />
           <Table
             categoryProductList={categoryProductList[2]}
             categoryName={categoryNameList[2]}
             categoryItemsCountList={itemCounts[categoryNameList[2]]} 
             updateItemCount={updateItemCount}
+            enlargeState={enlargeState}
           />
           </div>
           <div className={`${FlexCol} w-1/2 mr-8 ml-2`}>
@@ -298,6 +299,7 @@ export default function Order() {
               categoryName={categoryNameList[1]}
               categoryItemsCountList={itemCounts[categoryNameList[1]]} 
               updateItemCount={updateItemCount}
+              enlargeState={enlargeState}
             />
           </div>
         </div>
@@ -309,18 +311,21 @@ export default function Order() {
             categoryName={categoryNameList[0]}
             categoryItemsCountList={itemCounts[categoryNameList[0]]} 
             updateItemCount={updateItemCount}
+            enlargeState={enlargeState}
           />
           <Table
             categoryProductList={categoryProductList[2]}
             categoryName={categoryNameList[2]}
             categoryItemsCountList={itemCounts[categoryNameList[2]]}
             updateItemCount={updateItemCount}
+            enlargeState={enlargeState}
           />
           <Table
             categoryProductList={categoryProductList[1]}
             categoryName={categoryNameList[1]}
             categoryItemsCountList={itemCounts[categoryNameList[1]]} 
             updateItemCount={updateItemCount}
+            enlargeState={enlargeState}
           />
           </div>
         </div>
@@ -329,13 +334,13 @@ export default function Order() {
 
     <div className={`${FlexCol} sticky bottom-0 bg-beige `}>
       
-      <div className={`bg-white rounded-tl-full rounded-tr-full rounded-br-full text-center mt-10 ml-12 mr-12 pt-4 pb-2`}>
-        <p className={`font-Jeju text-[40px]`}>총 {totalPrice}원입니다. 결제하시겠습니까?</p>
+      <div className={`bg-white rounded-tl-full rounded-tr-full rounded-br-full text-center mt-10 ml-12 mr-12 p-8`}>
+        <p className={`font-Jeju text-5xl`}>총 {totalPrice}원입니다. 결제하시겠습니까?</p>
       </div>
 
       <div className={`${FlexRow} justify-center mt-10 mb-10`}>
         <button 
-          className={`${isButtonEnabled ? 'bg-red' : 'bg-gray-400'} w-2/5 h-[200px] rounded-[30px] pt-8`}
+          className={`${isButtonEnabled ? 'bg-mint/70' : 'bg-gray-400'} w-2/5 h-[200px] rounded-[30px] pt-8`}
           onClick={() => isButtonEnabled && setIsModalFirstOpen(true)}
           disabled={!isButtonEnabled}>
             <p className={'font-Gangwon text-[80px] text-white'}>결제하기</p>
@@ -443,37 +448,36 @@ export default function Order() {
 }
 
 
-function Table({categoryProductList, categoryName, categoryItemsCountList, updateItemCount}) {
+function Table({categoryProductList, categoryName, categoryItemsCountList, updateItemCount, enlargeState}) {
 
   return(
     <div className={`${FlexCol}`}>
-      <div className={`bg-darkred mt-10 mb-0 p-2 
-        font-Jeju text-white text-4xl text-center`}>
+      <div className={`bg-darkred mt-10 mb-0 p-6 
+        font-Jeju text-white text-${enlargeState ? '5xl' : '4xl'} text-center`}>
         <p>{categoryName}</p>
       </div>
 
       {categoryItemsCountList && categoryProductList.map((item, index) => (
-      <div key={index} className={`${FlexRow} font-Jeju text-4xl bg-white 
+      <div key={index} className={`${FlexRow} font-Jeju text-${enlargeState ? '5xl' : '4xl'} bg-white 
         p-4 mt-0 border-b-2 border-black border-l-4 border-r-4 items-center text-center`}>
         <div className={`w-[40%] m-0 p-0`}>
           <p>{item.product_name}</p>
-          <p className={`text-2xl`}>{item.product_detail}</p>
+          <p className={`text-4xl`}>{item.product_detail}</p>
         </div>
         <div className={`w-[30%] m-0 p-0`}>
           <p>{item.price}원</p>
         </div>
         <div className={`w-[30%] m-0 p-0 ${FlexRow} justify-center gap-2 `}>
-          <button className={`${categoryItemsCountList[index]>0? 'bg-red' : 'bg-gray-400'} rounded-full w-[50px] h-[50px] text-white`}
+          <button className={`${categoryItemsCountList[index]>0? 'bg-red' : 'bg-gray-400'} rounded-full w-[60px] h-[60px] text-white`}
             onClick={() => updateItemCount(categoryProductList, categoryName, index, categoryItemsCountList[index] - 1, categoryItemsCountList)}
             >
             <p className={`mt-1`}>-</p>
           </button>
-          <div className={`rounded-md border-2 border-black w-[80px] h-[50px] text-center`}>
+          <div className={`rounded-md border-2 border-black w-[80px] h-[60px] text-center`}>
             <p className={`mt-1`}>{categoryItemsCountList[index]}</p>
           </div>
-          <button className={`${categoryItemsCountList[index]>0? 'bg-red' : 'bg-gray-400'} rounded-full w-[50px] h-[50px] text-white`}
-           onClick={() =>  updateItemCount(categoryProductList, categoryName, index, categoryItemsCountList[index] + 1, categoryItemsCountList)}
-           >
+          <button className={`${categoryItemsCountList[index]>0? 'bg-red' : 'bg-gray-400'} rounded-full w-[60px] h-[60px] text-white`}
+           onClick={() =>  updateItemCount(categoryProductList, categoryName, index, categoryItemsCountList[index] + 1, categoryItemsCountList)}>
             <p className={`mt-1`}>+</p>
           </button>
         </div>
