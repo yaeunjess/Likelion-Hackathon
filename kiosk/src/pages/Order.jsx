@@ -94,7 +94,7 @@ export default function Order() {
   }, [isModalOpen]);
 
   //돋보기 아이콘 상태 관리 useState()
-  const [enlargeState, setEnlargeState] = useState(false);
+  const [enlargeState, setEnlargeState] = useState(true);
   const handleEnlargeClick = () => {
     setEnlargeState(!enlargeState);
   };
@@ -227,6 +227,7 @@ export default function Order() {
   const [waitNumber, setWaitNumber] = useState(112);
  //API-post
  const handleDoneClick = (paymentMethod) => {
+  setIsModalFirstOpen(false)
   console.log({
     products : orderedItems.map(item => item.id),
     quantity : orderedItems.map(item => item.number),
@@ -245,7 +246,6 @@ export default function Order() {
     console.log("주문 성공", response.data.order_number);
     const newWaitNumber = response.data.order_number;
     setWaitNumber(newWaitNumber);
-    console.log("주문 성공", newWaitNumber);
     navigate('/done', { state: { waitNumber: newWaitNumber } });
   })
   .catch((error) => {
@@ -262,12 +262,12 @@ export default function Order() {
         <button onClick={() => handleClick()} className={`w-[30%]`}>
           <img src='/images/logo.png' />
         </button>
-        <button 
+        {/* <button 
         className={`${FlexCol} w-[160px] h-[170px] justify-center flex absolute right-10 top-10  text-darkbrown text-4xl font-bold font-Gmarket items-center gap-4`}
         onClick={() => setIsModalOpen(true)}>
           <img src={Bell} className={`w-[150px] h-[170px]`}/> 
           <p>직원 호출</p>
-        </button>
+        </button> */}
       </div>
       
       
@@ -282,14 +282,15 @@ export default function Order() {
             categoryProductList={categoryProductList[0]}
             categoryName={categoryNameList[0]}
             categoryItemsCountList={itemCounts[categoryNameList[0]]} 
-        
             updateItemCount={updateItemCount}
+            enlargeState={enlargeState}
           />
           <Table
             categoryProductList={categoryProductList[2]}
             categoryName={categoryNameList[2]}
             categoryItemsCountList={itemCounts[categoryNameList[2]]} 
             updateItemCount={updateItemCount}
+            enlargeState={enlargeState}
           />
           </div>
           <div className={`${FlexCol} w-1/2 mr-8 ml-2`}>
@@ -298,6 +299,7 @@ export default function Order() {
               categoryName={categoryNameList[1]}
               categoryItemsCountList={itemCounts[categoryNameList[1]]} 
               updateItemCount={updateItemCount}
+              enlargeState={enlargeState}
             />
           </div>
         </div>
@@ -309,18 +311,21 @@ export default function Order() {
             categoryName={categoryNameList[0]}
             categoryItemsCountList={itemCounts[categoryNameList[0]]} 
             updateItemCount={updateItemCount}
+            enlargeState={enlargeState}
           />
           <Table
             categoryProductList={categoryProductList[2]}
             categoryName={categoryNameList[2]}
             categoryItemsCountList={itemCounts[categoryNameList[2]]}
             updateItemCount={updateItemCount}
+            enlargeState={enlargeState}
           />
           <Table
             categoryProductList={categoryProductList[1]}
             categoryName={categoryNameList[1]}
             categoryItemsCountList={itemCounts[categoryNameList[1]]} 
             updateItemCount={updateItemCount}
+            enlargeState={enlargeState}
           />
           </div>
         </div>
@@ -329,21 +334,27 @@ export default function Order() {
 
     <div className={`${FlexCol} sticky bottom-0 bg-beige `}>
       
-      <div className={`bg-white rounded-tl-full rounded-tr-full rounded-br-full text-center mt-10 ml-12 mr-12 pt-4 pb-2`}>
-        <p className={`font-Jeju text-[40px]`}>총 {totalPrice}원입니다. 결제하시겠습니까?</p>
+      <div className={`bg-white rounded-tl-full rounded-tr-full rounded-br-full text-center mt-10 ml-12 mr-12 p-8`}>
+        <p className={`font-Jeju text-5xl`}>총 {totalPrice}원입니다. 결제하시겠습니까?</p>
       </div>
 
       <div className={`${FlexRow} justify-center mt-10 mb-10`}>
         <button 
-          className={`${isButtonEnabled ? 'bg-red' : 'bg-gray-400'} w-2/5 h-[200px] rounded-[30px] pt-8`}
-          onClick={() => isButtonEnabled && setIsModalFirstOpen(true)}
-          disabled={!isButtonEnabled}>
-            <p className={'font-Gangwon text-[80px] text-white'}>결제하기</p>
+          className={`${FlexCol} w-[210px] h-[180px] justify-center absolute left-12 text-darkbrown text-5xl font-bold font-Gmarket items-center gap-6`}
+          onClick={() => setIsModalOpen(true)}>
+            <img src={Bell} className={`w-[170px] h-[180px]`}/> 
+            <p>직원 호출</p>
         </button>
         <button 
-        className={`${FlexCol} w-[170px] justify-center absolute right-12 text-darkbrown text-4xl font-bold font-Gmarket items-center`}
-        onClick={handleEnlargeClick}>
-          <img src={Enlarge}/>
+          className={`${isButtonEnabled ? 'bg-mint/70' : 'bg-gray-400'} w-2/5 h-[200px] rounded-[30px] pt-8`}
+          onClick={() => isButtonEnabled && setIsModalFirstOpen(true)}
+          disabled={!isButtonEnabled}>
+            <p className={`font-Gangwon text-[80px] text-${isButtonEnabled ? 'black' : 'white'}`}>결제하기</p>
+        </button>
+        <button 
+          className={`${FlexCol} w-[210px] h-[180px] justify-center absolute right-12 text-darkbrown text-5xl font-bold font-Gmarket items-center`}
+          onClick={handleEnlargeClick}>
+          <img src={Enlarge} className={`w-[170px] h-[180px]`}/>
           <p>{enlargeState === true ? "화면 축소":"화면 확대"}</p>
         </button>
       </div>
@@ -372,7 +383,7 @@ export default function Order() {
       isOpen={isModalFirstOpen} 
       onRequestClose={() => setIsModalFirstOpen(false)} 
       className="outline-none flex flex-col items-center text-center text-6xl font-Gangwon bg-whiteandgray rounded-[40px] w-[800px] h-[800px]
-      fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-2/3 text-white"
+      fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-2/3"
       style={{
         overlay: {
           backgroundColor: "rgba(0, 0, 0, 0.7)", 
@@ -384,19 +395,19 @@ export default function Order() {
       <div className="flex gap-8 justify-center h-[1000px] w-full items-center pt-16 pl-8 pr-8 ">
         <button 
           onClick={() => {setIstakeout(true); setIsModalTwoOpen(true); }}
-          className={`h-full w-full rounded-[40px] bg-mint/70`}>
+          className={`h-full w-full rounded-[40px] bg-mint/70 text-black`}>
           포장하기
         </button>
         <button 
           onClick={() => {setIstakeout(false); setIsModalTwoOpen(true); }}
-          className={`h-full w-full rounded-[40px] bg-mint/70`}>
+          className={`h-full w-full rounded-[40px] bg-mint/70 text-black`}>
           매장식사
         </button>
       </div>
       <div className="flex flex-col justify-center h-[300px] items-center h-full w-full p-8">
         <button 
           onClick={() => setIsModalFirstOpen(false)}
-          className={`h-full w-full rounded-[40px] bg-white text-mint/70`}>
+          className={`h-full w-full rounded-[40px] bg-white text-black`}>
           뒤로가기
         </button>
       </div>
@@ -406,7 +417,7 @@ export default function Order() {
       isOpen={isModalTwoOpen} 
       onRequestClose={() => setIsModalTwoOpen(false)} 
       className="outline-none flex flex-col items-center text-center text-6xl font-Gangwon bg-whiteandgray rounded-[40px] w-[800px] h-[800px]
-      fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-2/3 text-white"
+      fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-2/3 "
       style={{
         overlay: {
           backgroundColor: "rgba(0, 0, 0, 0)", 
@@ -418,19 +429,19 @@ export default function Order() {
       <div className="flex gap-8 justify-center h-[1000px] w-full items-center pt-16 pl-8 pr-8 ">
         <button 
           onClick={() => {setIsModalTwoOpen(false); handleDoneClick("카드"); }}
-          className={`h-full w-full rounded-[40px] bg-mint/70`}>
+          className={`h-full w-full rounded-[40px] bg-mint/70 text-black`}>
           카드
         </button>
         <button 
           onClick={() => {setIsModalTwoOpen(false); handleDoneClick("현금"); }}
-          className={`h-full w-full rounded-[40px] bg-mint/70`}>
+          className={`h-full w-full rounded-[40px] bg-mint/70 text-black`}>
           현금
         </button>
       </div>
       <div className="flex flex-col justify-center h-[300px] items-center h-full w-full p-8">
         <button 
           onClick={() => setIsModalTwoOpen(false)}
-          className={`h-full w-full rounded-[40px] bg-white text-mint/70`}>
+          className={`h-full w-full rounded-[40px] bg-white text-black`}>
           뒤로가기
         </button>
       </div>
@@ -443,37 +454,36 @@ export default function Order() {
 }
 
 
-function Table({categoryProductList, categoryName, categoryItemsCountList, updateItemCount}) {
+function Table({categoryProductList, categoryName, categoryItemsCountList, updateItemCount, enlargeState}) {
 
   return(
     <div className={`${FlexCol}`}>
-      <div className={`bg-darkred mt-10 mb-0 p-2 
-        font-Jeju text-white text-4xl text-center`}>
+      <div className={`bg-darkred mt-10 mb-0 p-6 
+        font-Jeju text-white text-${enlargeState ? '5xl' : '4xl'} text-center`}>
         <p>{categoryName}</p>
       </div>
 
       {categoryItemsCountList && categoryProductList.map((item, index) => (
-      <div key={index} className={`${FlexRow} font-Jeju text-4xl bg-white 
+      <div key={index} className={`${FlexRow} font-Jeju text-${enlargeState ? '5xl' : '4xl'} bg-white 
         p-4 mt-0 border-b-2 border-black border-l-4 border-r-4 items-center text-center`}>
         <div className={`w-[40%] m-0 p-0`}>
           <p>{item.product_name}</p>
-          <p className={`text-2xl`}>{item.product_detail}</p>
+          <p className={`text-4xl`}>{item.product_detail}</p>
         </div>
         <div className={`w-[30%] m-0 p-0`}>
           <p>{item.price}원</p>
         </div>
         <div className={`w-[30%] m-0 p-0 ${FlexRow} justify-center gap-2 `}>
-          <button className={`${categoryItemsCountList[index]>0? 'bg-red' : 'bg-gray-400'} rounded-full w-[50px] h-[50px] text-white`}
+          <button className={`${categoryItemsCountList[index]>0? 'bg-red' : 'bg-gray-400'} rounded-full w-[60px] h-[60px] text-white`}
             onClick={() => updateItemCount(categoryProductList, categoryName, index, categoryItemsCountList[index] - 1, categoryItemsCountList)}
             >
             <p className={`mt-1`}>-</p>
           </button>
-          <div className={`rounded-md border-2 border-black w-[80px] h-[50px] text-center`}>
+          <div className={`rounded-md border-2 border-black w-[80px] h-[60px] text-center`}>
             <p className={`mt-1`}>{categoryItemsCountList[index]}</p>
           </div>
-          <button className={`${categoryItemsCountList[index]>0? 'bg-red' : 'bg-gray-400'} rounded-full w-[50px] h-[50px] text-white`}
-           onClick={() =>  updateItemCount(categoryProductList, categoryName, index, categoryItemsCountList[index] + 1, categoryItemsCountList)}
-           >
+          <button className={`${categoryItemsCountList[index]>0? 'bg-red' : 'bg-gray-400'} rounded-full w-[60px] h-[60px] text-white`}
+           onClick={() =>  updateItemCount(categoryProductList, categoryName, index, categoryItemsCountList[index] + 1, categoryItemsCountList)}>
             <p className={`mt-1`}>+</p>
           </button>
         </div>
