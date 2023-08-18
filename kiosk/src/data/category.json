@@ -1,0 +1,14 @@
+[
+    {
+        "id": 1,
+        "category_name": "떡볶이류"
+    },
+    {
+        "id": 2,
+        "category_name": "사이드류"
+    },
+    {
+        "id": 3,
+        "category_name": "세트메뉴"
+    }
+]
