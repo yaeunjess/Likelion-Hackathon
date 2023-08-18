@@ -1,0 +1,47 @@
+# Logs
+logs
+*.log
+
+# Compiled output
+build/
+dist/
+out/
+public/
+
+# Dependency directories
+./kiosk/node_modules/
+
+# macOS
+.DS_Store
+
+# Editor-specific
+.vscode/
+
+# Environment variables
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Cache and artifacts
+.cache/
+*.pnp
+.pnp.js
+
+# Yarn
+yarn-error.log
+
+# ESLint
+.eslintcache/
+
+# Prettier
+prettier.config.js
+.prettierignore
+
+# IDE-specific
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
