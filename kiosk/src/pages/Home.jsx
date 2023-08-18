@@ -18,7 +18,7 @@ export default function Home() {
       return () => {
         audio.pause();
       };
-    }, []);
+    }, []); 
 
   return (
     //bg-background에서 background는 tailwind.config.js에서 설정했습니다
